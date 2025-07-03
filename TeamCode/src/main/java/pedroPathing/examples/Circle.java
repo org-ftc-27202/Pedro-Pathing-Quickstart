@@ -36,8 +36,6 @@ public class Circle extends OpMode {
     private Follower follower;
 
     private PathChain circle;
-    private PathChain star;
-
     /**
      * This initializes the Follower and creates the PathChain for the "circle". Additionally, this
      * initializes the FTC Dashboard telemetry.
@@ -53,14 +51,7 @@ public class Circle extends OpMode {
                 .addPath(new BezierCurve(new Point(-RADIUS, RADIUS, Point.CARTESIAN), new Point(-RADIUS,0, Point.CARTESIAN), new Point(0,0, Point.CARTESIAN)))
                 .build();
 
-        star = follower.pathBuilder()
-                .addPath(new BezierCurve(new Point(0,0, Point.CARTESIAN), new Point(0,RADIUS, Point.CARTESIAN), new Point(RADIUS, RADIUS, Point.CARTESIAN)))
-                .addPath(new BezierCurve(new Point(RADIUS, RADIUS, Point.CARTESIAN), new Point(0,RADIUS, Point.CARTESIAN), new Point(0,2*RADIUS, Point.CARTESIAN)))
-                .addPath(new BezierCurve(new Point(0,2*RADIUS, Point.CARTESIAN), new Point(0,RADIUS, Point.CARTESIAN), new Point(-RADIUS, RADIUS, Point.CARTESIAN)))
-                .addPath(new BezierCurve(new Point(-RADIUS, RADIUS, Point.CARTESIAN), new Point(0,RADIUS, Point.CARTESIAN), new Point(0,0, Point.CARTESIAN)))
-                .build();
-
-        follower.followPath(star);
+        follower.followPath(circle);
 
         telemetryA = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetryA.addLine("This will run in a roughly circular shape of radius " + RADIUS
@@ -77,7 +68,7 @@ public class Circle extends OpMode {
     public void loop() {
         follower.update();
         if (follower.atParametricEnd()) {
-            follower.followPath(star);
+            follower.followPath(circle);
         }
 
         follower.telemetryDebug(telemetryA);
