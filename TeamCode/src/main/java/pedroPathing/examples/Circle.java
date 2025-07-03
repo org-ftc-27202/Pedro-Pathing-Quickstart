@@ -31,11 +31,12 @@ import pedroPathing.constants.LConstants;
 public class Circle extends OpMode {
     private Telemetry telemetryA;
 
-    public static double RADIUS = 10;
+    public static double RADIUS = 5;
 
     private Follower follower;
 
     private PathChain circle;
+    private PathChain star;
 
     /**
      * This initializes the Follower and creates the PathChain for the "circle". Additionally, this
@@ -52,7 +53,14 @@ public class Circle extends OpMode {
                 .addPath(new BezierCurve(new Point(-RADIUS, RADIUS, Point.CARTESIAN), new Point(-RADIUS,0, Point.CARTESIAN), new Point(0,0, Point.CARTESIAN)))
                 .build();
 
-        follower.followPath(circle);
+        star = follower.pathBuilder()
+                .addPath(new BezierCurve(new Point(0,0, Point.CARTESIAN), new Point(0,RADIUS, Point.CARTESIAN), new Point(RADIUS, RADIUS, Point.CARTESIAN)))
+                .addPath(new BezierCurve(new Point(RADIUS, RADIUS, Point.CARTESIAN), new Point(0,RADIUS, Point.CARTESIAN), new Point(0,2*RADIUS, Point.CARTESIAN)))
+                .addPath(new BezierCurve(new Point(0,2*RADIUS, Point.CARTESIAN), new Point(0,RADIUS, Point.CARTESIAN), new Point(-RADIUS, RADIUS, Point.CARTESIAN)))
+                .addPath(new BezierCurve(new Point(-RADIUS, RADIUS, Point.CARTESIAN), new Point(0,RADIUS, Point.CARTESIAN), new Point(0,0, Point.CARTESIAN)))
+                .build();
+
+        follower.followPath(star);
 
         telemetryA = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetryA.addLine("This will run in a roughly circular shape of radius " + RADIUS
@@ -69,7 +77,7 @@ public class Circle extends OpMode {
     public void loop() {
         follower.update();
         if (follower.atParametricEnd()) {
-            follower.followPath(circle);
+            follower.followPath(star);
         }
 
         follower.telemetryDebug(telemetryA);
